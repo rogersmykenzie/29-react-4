@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
-import logo from './mainStreetAuto.svg';
-import axios from 'axios';
-import './App.css';
-
+import React, { Component } from "react";
+import logo from "./mainStreetAuto.svg";
+import axios from "axios";
+import "./App.css";
 // Toast notification dependencies
-import { ToastContainer, toast } from 'react-toastify';
-
+import { ToastContainer, toast } from "react-toastify";
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       vehiclesToDisplay: [],
       buyersToDisplay: []
     };
-
     this.getVehicles = this.getVehicles.bind(this);
     this.getPotentialBuyers = this.getPotentialBuyers.bind(this);
     this.sellCar = this.sellCar.bind(this);
@@ -27,59 +23,71 @@ class App extends Component {
     this.byYear = this.byYear.bind(this);
     this.deleteBuyer = this.deleteBuyer.bind(this);
   }
-
   getVehicles() {
     // axios (GET)
     // setState with response -> vehiclesToDisplay
-    axios.get('https://joes-autos.herokuapp.com/api/vehicles')
-    .then(response => {
-      toast.success('Got all vehicles')
-      this.setState({vehiclesToDisplay: response.data})
-    })
-    .catch(() => toast.error('Failed to get vehicles'))
+    axios
+      .get("https://joes-autos.herokuapp.com/api/vehicles")
+      .then(response => {
+        console.log(response.data);
+        this.setState({ vehiclesToDisplay: response.data });
+      })
+      .catch(error => {
+        console.log(error);
+        // alert("Uhoh! Something went wrong");
+      });
   }
-
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
+    axios
+      .get("https://joes-autos.herokuapp.com/api/buyers")
+      .then(response => {
+        console.log(response);
+        this.setState({ buyersToDisplay: response.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
-
   sellCar(id) {
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
-    axios.delete(`https://joes-autos.herokuapp.com/api/vehicles/${id}`)
-    .then(response => {
-      toast.success('Sold car')
-      this.setState({vehiclesToDisplay: response.data.vehicles})
-    })
-    .catch(() => toast.error('Failed to sell car'))
+    axios
+      .delete("https://joes-autos.herokuapp.com/api/vehicles/" + id)
+      .then(response => {
+        console.log(response);
+        this.setState({ vehiclesToDisplay: response.data.vehicles });
+      })
+      .catch(err => console.log(err));
   }
-
   filterByMake() {
     let make = this.selectedMake.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
-
   filterByColor() {
     let color = this.selectedColor.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
-
   updatePrice(priceChange, id) {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
-    axios.put(`https://joes-autos.herokuapp.com/api/vehicles/${id}/${priceChange}`)
-    .then(response => {
-      toast.success('Updated Price')
-      this.setState({vehiclesToDisplay: response.data.vehicles})
-    })
-    .catch(() => toast.error('Failed to update price'))
+    // .put(`https://joes-autos.herokuapp.com/api/vehicles/${id}/${priceChange}`)
+    axios
+      .put(
+        "https://joes-autos.herokuapp.com/api/vehicles/" +
+          id +
+          "/" +
+          priceChange
+      )
+      .then(response => {
+        console.log(response);
+        this.setState({ vehiclesToDisplay: response.data.vehicles });
+      })
+      .catch(err => console.log(err));
   }
-
   addCar() {
     let newCar = {
       make: this.make.value,
@@ -88,53 +96,45 @@ class App extends Component {
       year: this.year.value,
       price: this.price.value
     };
-
     // axios (POST)
     // setState with response -> vehiclesToDisplay
-    axios.post('https://joes-autos.herokuapp.com/api/vehicles', newCar)
-    .then(response => {
-      toast.success('Added car')
-      this.setState({vehiclesToDisplay: response.data.vehicles})
-    })
-    .catch(() => toast.error('Failed to add car'))
+    axios
+      .post("https://joes-autos.herokuapp.com/api/vehicles", newCar)
+      .then(response => {
+        console.log(response);
+        this.setState({ vehiclesToDisplay: response.data.vehicles });
+      })
+      .catch(err => console.log(err));
   }
-
   addBuyer() {
     let newBuyer = {
       name: this.name.value,
       phone: this.phone.value,
       address: this.address.value
     };
-
     //axios (POST)
     // setState with response -> buyersToDisplay
   }
-
   deleteBuyer(id) {
     // axios (DELETE)
     //setState with response -> buyersToDisplay
   }
-
   nameSearch() {
     let searchLetters = this.searchLetters.value;
-
     // axios (GET)
     // setState with response -> buyersToDisplay
   }
-
   byYear() {
     let year = this.searchYear.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
-
   // Do not edit the code below
   resetData(dataToReset) {
     axios
-      .get('https://joes-autos.herokuapp.com/api/' + dataToReset + '/reset')
+      .get("https://joes-autos.herokuapp.com/api/" + dataToReset + "/reset")
       .then(res => {
-        if (dataToReset === 'vehicles') {
+        if (dataToReset === "vehicles") {
           this.setState({ vehiclesToDisplay: res.data.vehicles });
         } else {
           this.setState({ buyersToDisplay: res.data.buyers });
@@ -142,7 +142,6 @@ class App extends Component {
       });
   }
   // Do not edit the code above
-
   render() {
     const vehicles = this.state.vehiclesToDisplay.map(v => {
       return (
@@ -152,37 +151,31 @@ class App extends Component {
           <p>Year: {v.year}</p>
           <p>Color: {v.color}</p>
           <p>Price: {v.price}</p>
-
           <button
             className="btn btn-sp"
-            onClick={() => this.updatePrice('up', v.id)}
+            onClick={() => this.updatePrice("up", v.id)}
           >
             Increase Price
           </button>
-
           <button
             className="btn btn-sp"
-            onClick={() => this.updatePrice('down', v.id)}
+            onClick={() => this.updatePrice("down", v.id)}
           >
             Decrease Price
           </button>
-
           <button className="btn btn-sp" onClick={() => this.sellCar(v.id)}>
             SOLD!
           </button>
-
           <hr className="hr" />
         </div>
       );
     });
-
     const buyers = this.state.buyersToDisplay.map(person => {
       return (
         <div key={person.id}>
           <p>Name: {person.name}</p>
           <p>Phone: {person.phone}</p>
           <p>Address: {person.address}</p>
-
           <button
             className="btn"
             onClick={() => {
@@ -191,39 +184,32 @@ class App extends Component {
           >
             No longer interested
           </button>
-
           <hr className="hr" />
         </div>
       );
     });
-
     return (
       <div>
         <ToastContainer />
-
         <header className="header">
           <img src={logo} alt="" />
-
           <button
             className="header-btn1 btn"
-            onClick={() => this.resetData('vehicles')}
+            onClick={() => this.resetData("vehicles")}
           >
             Reset Vehicles
           </button>
-
           <button
             className="header-btn2 btn"
-            onClick={() => this.resetData('buyers')}
+            onClick={() => this.resetData("buyers")}
           >
             Reset Buyers
           </button>
         </header>
-
         <div className="btn-container">
           <button className="btn-sp btn" onClick={this.getVehicles}>
             Get All Vehicles
           </button>
-
           <select
             onChange={this.filterByMake}
             ref={selectedMake => {
@@ -245,7 +231,6 @@ class App extends Component {
             <option value="Dodge">Dodge</option>
             <option value="Chrysler">Chrysler</option>
           </select>
-
           <select
             ref={selectedColor => {
               this.selectedColor = selectedColor;
@@ -264,7 +249,6 @@ class App extends Component {
             <option value="violet">Violet</option>
             <option value="teal">Teal</option>
           </select>
-
           <input
             onChange={this.nameSearch}
             placeholder="Search by name"
@@ -273,7 +257,6 @@ class App extends Component {
               this.searchLetters = searchLetters;
             }}
           />
-
           <input
             ref={searchYear => {
               this.searchYear = searchYear;
@@ -282,18 +265,14 @@ class App extends Component {
             type="number"
             placeholder="Year"
           />
-
           <button onClick={this.byYear} className="btn-inp">
             Go
           </button>
-
           <button className="btn-sp btn" onClick={this.getPotentialBuyers}>
             Get Potential Buyers
           </button>
         </div>
-
         <br />
-
         <p className="form-wrap">
           <input
             className="btn-sp"
@@ -332,12 +311,10 @@ class App extends Component {
               this.price = price;
             }}
           />
-
           <button className="btn-sp btn" onClick={this.addCar}>
             Add vehicle
           </button>
         </p>
-
         <p className="form-wrap">
           <input
             className="btn-sp"
@@ -360,22 +337,17 @@ class App extends Component {
               this.address = address;
             }}
           />
-
           <button onClick={this.addBuyer} className="btn-sp btn">
             Add buyer
           </button>
         </p>
-
         <main className="main-wrapper">
           <section className="info-box">
             <h3>Inventory</h3>
-
             {vehicles}
           </section>
-
           <section className="info-box">
             <h3>Potential Buyers</h3>
-
             {buyers}
           </section>
         </main>
@@ -383,5 +355,4 @@ class App extends Component {
     );
   }
 }
-
 export default App;
